@@ -1,3 +1,12 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// motorA2              motor         12              
+// motorA1              motor         14              
+// motorB2              motor         13              
+// motorB1              motor         11              
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----        
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -6,9 +15,6 @@
 /*    Description:  Competition Template                                      */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
 
@@ -32,7 +38,7 @@ competition Competition;
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-
+  
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 }
@@ -66,14 +72,27 @@ void autonomous(void) {
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
-    // This is the main execution loop for the user control program.
-    // Each time through the loop your program should update motor + servo
-    // values based on feedback from the joysticks.
-
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to
-    // update your motors, etc.
-    // ........................................................................
+    if (Controller1.Axis3.position() > 10 || Controller1.Axis3.position() < -10) {
+        motorA1.spin(reverse, Controller1.Axis3.position(), percent);
+        motorA2.spin(forward, Controller1.Axis3.position(), percent);
+        motorB1.spin(reverse, Controller1.Axis3.position(), percent);
+        motorB2.spin(forward, Controller1.Axis3.position(), percent);
+    } else if (Controller1.Axis1.position() > 10 || Controller1.Axis1.position() < -10) {
+        motorA1.spin(reverse, Controller1.Axis1.position(), percent);
+        motorA2.spin(reverse, Controller1.Axis1.position(), percent);
+        motorB1.spin(forward, Controller1.Axis1.position(), percent);
+        motorB2.spin(forward, Controller1.Axis1.position(), percent);
+    } else if (Controller1.Axis4.position() > 10 || Controller1.Axis4.position() < -10) {
+        motorA1.spin(forward, Controller1.Axis4.position(), percent);
+        motorA2.spin(reverse, Controller1.Axis4.position(), percent);
+        motorB1.spin(reverse, Controller1.Axis4.position(), percent);
+        motorB2.spin(forward, Controller1.Axis4.position(), percent);
+    } else {
+        motorA1.stop();
+        motorA2.stop();
+        motorB1.stop();
+        motorB2.stop();
+    }
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
