@@ -72,26 +72,47 @@ void autonomous(void) {
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
-    if (Controller1.Axis3.position() > 10 || Controller1.Axis3.position() < -10) {
-        motorA1.spin(reverse, Controller1.Axis3.position(), percent);
-        motorA2.spin(forward, Controller1.Axis3.position(), percent);
-        motorB1.spin(reverse, Controller1.Axis3.position(), percent);
-        motorB2.spin(forward, Controller1.Axis3.position(), percent);
-    } else if (Controller1.Axis1.position() > 10 || Controller1.Axis1.position() < -10) {
-        motorA1.spin(reverse, Controller1.Axis1.position(), percent);
-        motorA2.spin(reverse, Controller1.Axis1.position(), percent);
-        motorB1.spin(forward, Controller1.Axis1.position(), percent);
-        motorB2.spin(forward, Controller1.Axis1.position(), percent);
-    } else if (Controller1.Axis4.position() > 10 || Controller1.Axis4.position() < -10) {
-        motorA1.spin(forward, Controller1.Axis4.position(), percent);
-        motorA2.spin(reverse, Controller1.Axis4.position(), percent);
-        motorB1.spin(reverse, Controller1.Axis4.position(), percent);
-        motorB2.spin(forward, Controller1.Axis4.position(), percent);
-    } else {
-        motorA1.stop();
-        motorA2.stop();
-        motorB1.stop();
-        motorB2.stop();
+    if (Controller1.Axis3.position() > 10 || Controller1.Axis3.position() < -10 && Controller1.Axis4.position() == 0) {      //Forward backward on axis 3
+      motorA1.spin(reverse, Controller1.Axis3.position(), percent);
+      motorA2.spin(forward, Controller1.Axis3.position(), percent);
+      motorB1.spin(reverse, Controller1.Axis3.position(), percent);
+      motorB2.spin(forward, Controller1.Axis3.position(), percent);
+    } 
+    else if (Controller1.Axis1.position() > 10 || Controller1.Axis1.position() < -10) { //Point turn left/right on axis 1
+      motorA1.spin(reverse, Controller1.Axis1.position(), percent);
+      motorA2.spin(reverse, Controller1.Axis1.position(), percent);
+      motorB1.spin(forward, Controller1.Axis1.position(), percent);
+      motorB2.spin(forward, Controller1.Axis1.position(), percent);
+    } 
+    else if (Controller1.Axis4.position() > 10 || Controller1.Axis4.position() < -10 && Controller1.Axis3.position() == 0) {  //Sideways right/left on axis 4
+      motorA1.spin(forward, Controller1.Axis4.position(), percent);
+      motorA2.spin(reverse, Controller1.Axis4.position(), percent);
+      motorB1.spin(reverse, Controller1.Axis4.position(), percent);
+      motorB2.spin(forward, Controller1.Axis4.position(), percent);
+    } 
+    else if (Controller1.Axis4.position() + Controller1.Axis3.position() > 10 || Controller1.Axis4.position() + Controller1.Axis3.position() < -10) {
+      if (Controller1.Axis4.position() > 10 && Controller1.Axis3.position() > 10){
+       motorB1.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
+       motorB2.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent); 
+      }
+      else if (Controller1.Axis4.position() < -10 && Controller1.Axis3.position() < -10){
+        motorA1.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
+        motorA2.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
+      }
+      else if (Controller1.Axis4.position() > 10 && Controller1.Axis3.position() < -10){
+        motorA1.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
+        motorA2.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
+      }
+      else if (Controller1.Axis4.position() < -10 && Controller1.Axis3.position() > 10){
+        motorB1.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
+        motorB2.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
+      }
+    }
+    else { //stops the motors
+      motorA1.stop();
+      motorA2.stop();
+      motorB1.stop();
+      motorB2.stop();
     }
 
     wait(20, msec); // Sleep the task for a short amount of time to
