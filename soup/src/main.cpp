@@ -115,6 +115,9 @@ void usercontrol(void) {
       motorB2.stop();
     }
 
+    if (Controller1.ButtonUp.pressed()){
+      pass;
+    }
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }
