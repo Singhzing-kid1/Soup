@@ -117,7 +117,8 @@ void usercontrol(void) {
       motorB1.stop();
       motorB2.stop();
     }
-
+    
+    // TODO: add lift down code
     if (Controller1.ButtonUp.pressed()){ 
       if (pickerUpper.rotation(degrees) == 0){
         pickerUpper.spin(forward, 100, percent);
