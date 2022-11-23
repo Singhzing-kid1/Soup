@@ -71,6 +71,9 @@ void autonomous(void) {
 
 void usercontrol(void) {
   // User control code here, inside the loop
+
+
+  // TODO: we know that forward, backward, strafe left/right and point turn left/right work. block comment them out to test diagonal movement
   while (1) {
     if (Controller1.Axis3.position() > 10 || Controller1.Axis3.position() < -10 && Controller1.Axis4.position() == 0) {      //Forward backward on axis 3
       motorA1.spin(reverse, Controller1.Axis3.position(), percent);
@@ -92,20 +95,20 @@ void usercontrol(void) {
     } 
     else if (Controller1.Axis4.position() + Controller1.Axis3.position() > 10 || Controller1.Axis4.position() + Controller1.Axis3.position() < -10) {
       if (Controller1.Axis4.position() > 10 && Controller1.Axis3.position() > 10){
-       motorB1.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
-       motorB2.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent); 
+       motorB1.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent); // forward right
+       motorB2.spin(forward, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent); 
       }
       else if (Controller1.Axis4.position() < -10 && Controller1.Axis3.position() < -10){
-        motorA1.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
-        motorA2.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
+        motorA1.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent); // backward left
+        motorA2.spin(forward, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
       }
       else if (Controller1.Axis4.position() > 10 && Controller1.Axis3.position() < -10){
-        motorA1.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
-        motorA2.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
+        motorA1.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent); // forward left
+        motorA2.spin(forward, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
       }
       else if (Controller1.Axis4.position() < -10 && Controller1.Axis3.position() > 10){
-        motorB1.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
-        motorB2.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
+        motorB1.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent); // backward right
+        motorB2.spin(forward, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
       }
     }
     else { //stops the motors
@@ -115,9 +118,16 @@ void usercontrol(void) {
       motorB2.stop();
     }
 
-    if (Controller1.ButtonUp.pressed()){
-      pass;
+    if (Controller1.ButtonUp.pressed()){ 
+      if (pickerUpper.rotation(degrees) == 0){
+        pickerUpper.spin(forward, 100, percent);
+      } else if (pickerUpper.rotation(degrees) > 0 && pickerUpper.rotation(degrees) <= 360){
+        pickerUpper.stop();
+        pickerUpper.resetRotation();
+      }
     }
+
+
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }
