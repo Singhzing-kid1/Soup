@@ -69,65 +69,79 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+void forwardBackward(double axis){
+    motorA1.spin(forward, axis, percent);
+    motorA2.spin(reverse, axis, percent);
+    motorB1.spin(reverse, axis, percent);
+    motorB2.spin(forward, axis, percent);  
+}
+
+void strafe(double axis){
+    motorA1.spin(reverse, axis, percent);
+    motorA2.spin(forward, axis, percent);
+    motorB1.spin(reverse, axis, percent);
+    motorB2.spin(forward, axis, percent);  
+}
+
+void pointTurn(double axis){
+    motorA1.spin(reverse, axis, percent);
+    motorA2.spin(reverse, axis, percent);
+    motorB1.spin(forward, axis, percent);
+    motorB2.spin(forward, axis, percent);  
+}
+
+void diagonalA(double axis1, double axis2){
+    motorA1.spin(forward, (axis1 + axis2)/2, percent);
+    motorA2.spin(reverse, (axis1 + axis2)/2, percent);
+}
+
+void diagonalB(double axis1, double axis2){
+    motorB1.spin(reverse, (axis1 + axis2)/2, percent);
+    motorB2.spin(forward, (axis1 + axis2)/2, percent);
+}
+
 void usercontrol(void) {
   // User control code here, inside the loop
 
+  double axis3 = Controller1.Axis3.position(); // put the values of the axises into variable's
+  double axis4 = Controller1.Axis4.position();
+  double axis1 = Controller1.Axis1.position();
 
-  // TODO: we know that forward, backward, strafe left/right and point turn left/right work. block comment them out to test diagonal movement
   while (1) {
-    if (Controller1.Axis3.position() > 10 || Controller1.Axis3.position() < -10 && Controller1.Axis4.position() == 0) {      //Forward backward on axis 3
-      motorA1.spin(reverse, Controller1.Axis3.position(), percent);
-      motorA2.spin(forward, Controller1.Axis3.position(), percent);
-      motorB1.spin(reverse, Controller1.Axis3.position(), percent);
-      motorB2.spin(forward, Controller1.Axis3.position(), percent);
-    } 
-    else if (Controller1.Axis1.position() > 10 || Controller1.Axis1.position() < -10) { //Point turn left/right on axis 1
-      motorA1.spin(reverse, Controller1.Axis1.position(), percent);
-      motorA2.spin(reverse, Controller1.Axis1.position(), percent);
-      motorB1.spin(forward, Controller1.Axis1.position(), percent);
-      motorB2.spin(forward, Controller1.Axis1.position(), percent);
-    } 
-    else if (Controller1.Axis4.position() > 10 || Controller1.Axis4.position() < -10 && Controller1.Axis3.position() == 0) {  //Sideways right/left on axis 4
-      motorA1.spin(forward, Controller1.Axis4.position(), percent);
-      motorA2.spin(reverse, Controller1.Axis4.position(), percent);
-      motorB1.spin(reverse, Controller1.Axis4.position(), percent);
-      motorB2.spin(forward, Controller1.Axis4.position(), percent);
-    } 
-    else if (Controller1.Axis4.position() + Controller1.Axis3.position() > 10 || Controller1.Axis4.position() + Controller1.Axis3.position() < -10) {
-      if (Controller1.Axis4.position() > 10 && Controller1.Axis3.position() > 10){
-       motorB1.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent); // forward right
-       motorB2.spin(forward, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent); 
-      }
-      else if (Controller1.Axis4.position() < -10 && Controller1.Axis3.position() < -10){
-        motorA1.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent); // backward left
-        motorA2.spin(forward, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
-      }
-      else if (Controller1.Axis4.position() > 10 && Controller1.Axis3.position() < -10){
-        motorA1.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent); // forward left
-        motorA2.spin(forward, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
-      }
-      else if (Controller1.Axis4.position() < -10 && Controller1.Axis3.position() > 10){
-        motorB1.spin(reverse, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent); // backward right
-        motorB2.spin(forward, (Controller1.Axis4.position()+Controller1.Axis3.position())/2, percent);
-      }
-    }
-    else { //stops the motors
-      motorA1.stop();
-      motorA2.stop();
-      motorB1.stop();
-      motorB2.stop();
-    }
-    
-    // TODO: add lift down code
-    if (Controller1.ButtonUp.pressed()){ 
-      if (pickerUpper.rotation(degrees) == 0){
-        pickerUpper.spin(forward, 100, percent);
-      } else if (pickerUpper.rotation(degrees) > 0 && pickerUpper.rotation(degrees) <= 360){
-        pickerUpper.stop();
-        pickerUpper.resetRotation();
-      }
-    }
 
+    axis3Cond1 = axis3 > 10 ? true : false; // get possible conditions for axis 3
+    axis3Cond2 = axis3 < -10 ? true : false;
+    axis3Cond3 = axis3 == 0 ? true : false;
+
+    axis4Cond1 = axis4 > 10 ? true : false; // get possible conditions for axis 4
+    axis4Cond2 = axis4 < -10 ? true : false;
+    axis4Cond3 = axis4 == 0 ? true : false;
+
+    mixCond1 = axis3Cond1 && axis4Cond1 ? true : false; // get possible conditions for axis 3 and 4
+    mixCond2 = axis3Cond2 && axis4Cond2 ? true : false;
+    mixCond3 = axis3Cond1 && axis4Cond2 ? true : false;
+    mixCond4 = axis3Cond2 && axis4Cond1 ? true : false;    
+
+
+    axis1Cond1 = axis1 > 10 ? true : false; // get possible conditions for axis 1
+    axis1Cond2 = axis1 < -10 ? true : false;
+
+    buttonUpPressed = Controller1.ButtonUp.pressed() ? true : false; // is the up button pressed?
+    buttonDownPressed = Controller1.ButtonDown.pressed() ? true : false; // is the down button pressed?
+    positiveEncoders = pickerUpper.rotation(degrees) >= 0 && pickerUpper.rotation(degrees) <= 360 // is the encoder value positive and less than 360?
+    negativeEncoders = pickerUpper.rotation(degrees) <= 0 && pickerUpper.rotation(degrees) >= -360 // is the encoder value negative and greater than -360?
+    encodersAreWithinRange = positiveEncoders || negativeEncoders ? true : false; // is the current encoder value within the range of -360 to 360?
+
+    buttonUpPressed || buttonDownPressed && encodersAreWithinRange ? buttonDownPressed ? pickerUpper.spin(reverse, 100, percent) : pickerUpper.spin(forward, 100, percent) : pickerUpper.stop(); // if the up or down button is pressed and the encoder value is within range, spin the picker upper motor, otherwise stop the motor
+
+    !encodersWithinRange ? pickerUpper.resetRotation() : cout << "Encoders are within range"; // if the encoder value is not within range, reset the encoder value
+
+    axis3Cond1 || axis3Cond2 && axis4Cond3 ? forwardBackward(axis3) : driveTrain.stop(); // driving conrtrols for forward/backward, strafing, and turning
+    axis4Cond1 || axis4Cond2 && axis3Cond3 ? strafe(axis4) : driveTrain.stop(); 
+    axis1Cond1 || axis1Cond2 ? pointTurn(axis1) : driveTrain.stop(); 
+
+    mixCond1 || mixCond2 ? diagonalA(axis3, axis4) : driveTrain.stop(); // driving controls for diagonal movement
+    mixCond3 || mixCond4 ? diagonalB(axis3, axis4) : driveTrain.stop();
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
