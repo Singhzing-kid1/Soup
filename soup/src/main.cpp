@@ -107,31 +107,31 @@ void usercontrol(void) {
   double axis4 = Controller1.Axis4.position();
   double axis1 = Controller1.Axis1.position();
 
+  bool axis3Cond1 = axis3 > 10 ? true : false; // get possible conditions for axis 3
+  bool axis3Cond2 = axis3 < -10 ? true : false;
+  bool axis3Cond3 = axis3 == 0 ? true : false;
+
+  bool axis4Cond1 = axis4 > 10 ? true : false; // get possible conditions for axis 4
+  bool axis4Cond2 = axis4 < -10 ? true : false;
+  bool axis4Cond3 = axis4 == 0 ? true : false;
+
+  bool mixCond1 = axis3Cond1 && axis4Cond1 ? true : false; // get possible conditions for axis 3 and 4
+  bool mixCond2 = axis3Cond2 && axis4Cond2 ? true : false;
+  bool mixCond3 = axis3Cond1 && axis4Cond2 ? true : false;
+  bool mixCond4 = axis3Cond2 && axis4Cond1 ? true : false;    
+
+
+  bool axis1Cond1 = axis1 > 10 ? true : false; // get possible conditions for axis 1
+  bool axis1Cond2 = axis1 < -10 ? true : false;
+
+  bool buttonUpPressed = Controller1.ButtonUp.pressed() ? true : false; // is the up button pressed?
+  bool buttonDownPressed = Controller1.ButtonDown.pressed() ? true : false; // is the down button pressed?
+  bool positiveEncoders = pickerUpper.rotation(degrees) >= 0 && pickerUpper.rotation(degrees) <= 360 ? true : false; // is the encoder value positive and less than 360?
+  bool negativeEncoders = pickerUpper.rotation(degrees) <= 0 && pickerUpper.rotation(degrees) >= -360 ? true : false;// is the encoder value negative and greater than -360?
+  bool encodersAreWithinRange = positiveEncoders || negativeEncoders ? true : false; // is the current encoder value within the range of -360 to 360?
+
   while (1) {
-
-    axis3Cond1 = axis3 > 10 ? true : false; // get possible conditions for axis 3
-    axis3Cond2 = axis3 < -10 ? true : false;
-    axis3Cond3 = axis3 == 0 ? true : false;
-
-    axis4Cond1 = axis4 > 10 ? true : false; // get possible conditions for axis 4
-    axis4Cond2 = axis4 < -10 ? true : false;
-    axis4Cond3 = axis4 == 0 ? true : false;
-
-    mixCond1 = axis3Cond1 && axis4Cond1 ? true : false; // get possible conditions for axis 3 and 4
-    mixCond2 = axis3Cond2 && axis4Cond2 ? true : false;
-    mixCond3 = axis3Cond1 && axis4Cond2 ? true : false;
-    mixCond4 = axis3Cond2 && axis4Cond1 ? true : false;    
-
-
-    axis1Cond1 = axis1 > 10 ? true : false; // get possible conditions for axis 1
-    axis1Cond2 = axis1 < -10 ? true : false;
-
-    buttonUpPressed = Controller1.ButtonUp.pressed() ? true : false; // is the up button pressed?
-    buttonDownPressed = Controller1.ButtonDown.pressed() ? true : false; // is the down button pressed?
-    positiveEncoders = pickerUpper.rotation(degrees) >= 0 && pickerUpper.rotation(degrees) <= 360 // is the encoder value positive and less than 360?
-    negativeEncoders = pickerUpper.rotation(degrees) <= 0 && pickerUpper.rotation(degrees) >= -360 // is the encoder value negative and greater than -360?
-    encodersAreWithinRange = positiveEncoders || negativeEncoders ? true : false; // is the current encoder value within the range of -360 to 360?
-
+    
     buttonUpPressed || buttonDownPressed && encodersAreWithinRange ? buttonDownPressed ? pickerUpper.spin(reverse, 100, percent) : pickerUpper.spin(forward, 100, percent) : pickerUpper.stop(); // if the up or down button is pressed and the encoder value is within range, spin the picker upper motor, otherwise stop the motor
 
     !encodersWithinRange ? pickerUpper.resetRotation() : cout << "Encoders are within range"; // if the encoder value is not within range, reset the encoder value
