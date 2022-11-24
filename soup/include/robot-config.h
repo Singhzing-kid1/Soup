@@ -9,6 +9,7 @@ extern motor motorB2;
 extern motor motorB1;
 extern controller Controller1;
 extern motor_group pickerUpper;
+extern motor_group driveTrain;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
