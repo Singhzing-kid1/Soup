@@ -100,6 +100,10 @@ void diagonalB(double axis1, double axis2){
     motorB2.spin(forward, (axis1 + axis2)/2, percent);
 }
 
+void doNothing(){
+    Controller1.rumble("---...--.-.");
+}
+
 void usercontrol(void) {
   // User control code here, inside the loop
 
@@ -124,20 +128,21 @@ void usercontrol(void) {
   bool axis1Cond1 = axis1 > 10 ? true : false; // get possible conditions for axis 1
   bool axis1Cond2 = axis1 < -10 ? true : false;
 
-  bool buttonUpPressed = Controller1.ButtonUp.pressed() ? true : false; // is the up button pressed?
-  bool buttonDownPressed = Controller1.ButtonDown.pressed() ? true : false; // is the down button pressed?
+  
   bool positiveEncoders = pickerUpper.rotation(degrees) >= 0 && pickerUpper.rotation(degrees) <= 360 ? true : false; // is the encoder value positive and less than 360?
   bool negativeEncoders = pickerUpper.rotation(degrees) <= 0 && pickerUpper.rotation(degrees) >= -360 ? true : false;// is the encoder value negative and greater than -360?
   bool encodersAreWithinRange = positiveEncoders || negativeEncoders ? true : false; // is the current encoder value within the range of -360 to 360?
 
   while (1) {
-    
-    buttonUpPressed || buttonDownPressed && encodersAreWithinRange ? buttonDownPressed ? pickerUpper.spin(reverse, 100, percent) : pickerUpper.spin(forward, 100, percent) : pickerUpper.stop(); // if the up or down button is pressed and the encoder value is within range, spin the picker upper motor, otherwise stop the motor
 
-    !encodersWithinRange ? pickerUpper.resetRotation() : cout << "Encoders are within range"; // if the encoder value is not within range, reset the encoder value
+  
+    //Controller1.ButtonUp.pressed(encoders ? pickerUpper.spin(forward, 100, percent) : pickerUpper.stop()); // is the up button pressed?
+    //Controller1.ButtonDown.pressed(encoders ? pickerUpper.spin(reverse, 100, percent) : pickerUpper.stop()); // is the down button pressed?
 
-    axis3Cond1 || axis3Cond2 && axis4Cond3 ? forwardBackward(axis3) : driveTrain.stop(); // driving conrtrols for forward/backward, strafing, and turning
-    axis4Cond1 || axis4Cond2 && axis3Cond3 ? strafe(axis4) : driveTrain.stop(); 
+    !encodersAreWithinRange ? pickerUpper.resetRotation() : doNothing(); // if the encoder value is not within range, reset the encoder value
+
+    (axis3Cond1 || axis3Cond2) && axis4Cond3 ? forwardBackward(axis3) : driveTrain.stop(); // driving conrtrols for forward/backward, strafing, and turning
+    (axis4Cond1 || axis4Cond2) && axis3Cond3 ? strafe(axis4) : driveTrain.stop(); 
     axis1Cond1 || axis1Cond2 ? pointTurn(axis1) : driveTrain.stop(); 
 
     mixCond1 || mixCond2 ? diagonalA(axis3, axis4) : driveTrain.stop(); // driving controls for diagonal movement
