@@ -90,7 +90,7 @@ void pointTurn(double axis){
     motorB2.spin(forward, axis, percent);  
 }
 
-void diagonalA(double axis1, double axis2){
+void diagonalA  (double axis1, double axis2){
     motorA1.spin(forward, (axis1 + axis2)/2, percent);
     motorA2.spin(reverse, (axis1 + axis2)/2, percent);
 }
@@ -111,33 +111,52 @@ void usercontrol(void) {
   double axis4 = Controller1.Axis4.position();
   double axis1 = Controller1.Axis1.position();
 
-  bool axis3Cond1 = axis3 > 10 ? true : false; // get possible conditions for axis 3
-  bool axis3Cond2 = axis3 < -10 ? true : false;
-  bool axis3Cond3 = axis3 == 0 ? true : false;
+  bool axis3Cond1;
+  bool axis3Cond2;
+  bool axis3Cond3;
 
-  bool axis4Cond1 = axis4 > 10 ? true : false; // get possible conditions for axis 4
-  bool axis4Cond2 = axis4 < -10 ? true : false;
-  bool axis4Cond3 = axis4 == 0 ? true : false;
+  bool axis4Cond1;
+  bool axis4Cond2;
+  bool axis4Cond3;
 
-  bool mixCond1 = axis3Cond1 && axis4Cond1 ? true : false; // get possible conditions for axis 3 and 4
-  bool mixCond2 = axis3Cond2 && axis4Cond2 ? true : false;
-  bool mixCond3 = axis3Cond1 && axis4Cond2 ? true : false;
-  bool mixCond4 = axis3Cond2 && axis4Cond1 ? true : false;    
+  bool mixCond1;
+  bool mixCond2;
+  bool mixCond3;
+  bool mixCond4;
 
 
-  bool axis1Cond1 = axis1 > 10 ? true : false; // get possible conditions for axis 1
-  bool axis1Cond2 = axis1 < -10 ? true : false;
+  bool axis1Cond1;
+  bool axis1Cond2;
 
   
-  bool positiveEncoders = pickerUpper.rotation(degrees) >= 0 && pickerUpper.rotation(degrees) <= 360 ? true : false; // is the encoder value positive and less than 360?
-  bool negativeEncoders = pickerUpper.rotation(degrees) <= 0 && pickerUpper.rotation(degrees) >= -360 ? true : false;// is the encoder value negative and greater than -360?
-  bool encodersAreWithinRange = positiveEncoders || negativeEncoders ? true : false; // is the current encoder value within the range of -360 to 360?
+  bool positiveEncoders; 
+  bool negativeEncoders;
+  bool encodersAreWithinRange; 
 
   while (1) {
 
-  
-    //Controller1.ButtonUp.pressed(encoders ? pickerUpper.spin(forward, 100, percent) : pickerUpper.stop()); // is the up button pressed?
-    //Controller1.ButtonDown.pressed(encoders ? pickerUpper.spin(reverse, 100, percent) : pickerUpper.stop()); // is the down button pressed?
+    axi3cond1 = axis3 > 10 ? true : false; // get possible conditions for axis 3
+    axi3cond2 = axis3 < -10 ? true : false;
+    axi3cond3 = axis3 == 0 ? true : false;
+
+    axi4cond1 = axis4 > 10 ? true : false; // get possible conditions for axis 4
+    axi4cond2 = axis4 < -10 ? true : false;
+    axi4cond3 = axis4 == 0 ? true : false;
+
+    mixCond1 = axis3Cond1 && axis4Cond1 ? true : false; // get possible conditions for axis 3 and 4
+    mixCond2 = axis3Cond2 && axis4Cond2 ? true : false;
+    mixCond3 = axis3Cond1 && axis4Cond2 ? true : false;
+    mixCond4 = axis3Cond2 && axis4Cond1 ? true : false;
+
+    axis1cond1 = axis1 > 10 ? true : false; // get possible conditions for axis 1
+    axis1cond2 = axis1 < -10 ? true : false;
+
+    positiveEncoders = pickerUpper.rotation(degrees) >= 0 && pickerUpper.rotation(degrees) <= 360 ? true : false;
+    negativeEncoders = pickerUpper.rotation(degrees) <= 0 && pickerUpper.rotation(degrees) >= -360 ? true : false;
+    encodersAreWithinRange = positiveEncoders || negativeEncoders ? true : false;
+
+    Controller1.ButtonUp.pressed(); // is the up button pressed?
+    Controller1.ButtonDown.pressed(); // is the down button pressed?
 
     !encodersAreWithinRange ? pickerUpper.resetRotation() : doNothing(); // if the encoder value is not within range, reset the encoder value
 
@@ -146,7 +165,8 @@ void usercontrol(void) {
     axis1Cond1 || axis1Cond2 ? pointTurn(axis1) : driveTrain.stop(); 
 
     mixCond1 || mixCond2 ? diagonalA(axis3, axis4) : driveTrain.stop(); // driving controls for diagonal movement
-    mixCond3 || mixCond4 ? diagonalB(axis3, axis4) : driveTrain.stop();
+    mixCond3 ? diagonalB(axis3, -1*axis4) : driveTrain.stop();
+    mixCond4 ? diagonalB(-1*axis3, axis4) : driveTrain.stop();
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
