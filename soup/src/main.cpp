@@ -135,28 +135,27 @@ void usercontrol(void) {
 
   while (1) {
 
-    axi3cond1 = axis3 > 10 ? true : false; // get possible conditions for axis 3
-    axi3cond2 = axis3 < -10 ? true : false;
-    axi3cond3 = axis3 == 0 ? true : false;
+    axis3Cond1 = axis3 > 10 ? true : false; // get possible Conditions for axis 3
+    axis3Cond2 = axis3 < -10 ? true : false;
+    axis3Cond3 = axis3 == 0 ? true : false;
 
-    axi4cond1 = axis4 > 10 ? true : false; // get possible conditions for axis 4
-    axi4cond2 = axis4 < -10 ? true : false;
-    axi4cond3 = axis4 == 0 ? true : false;
+    axis4Cond1 = axis4 > 10 ? true : false; // get possible Conditions for axis 4
+    axis4Cond2 = axis4 < -10 ? true : false;
+    axis4Cond3 = axis4 == 0 ? true : false;
 
-    mixCond1 = axis3Cond1 && axis4Cond1 ? true : false; // get possible conditions for axis 3 and 4
+    mixCond1 = axis3Cond1 && axis4Cond1 ? true : false; // get possible Conditions for axis 3 and 4
     mixCond2 = axis3Cond2 && axis4Cond2 ? true : false;
     mixCond3 = axis3Cond1 && axis4Cond2 ? true : false;
     mixCond4 = axis3Cond2 && axis4Cond1 ? true : false;
 
-    axis1cond1 = axis1 > 10 ? true : false; // get possible conditions for axis 1
-    axis1cond2 = axis1 < -10 ? true : false;
+    axis1Cond1 = axis1 > 10 ? true : false; // get possible Conditions for axis 1
+    axis1Cond2 = axis1 < -10 ? true : false;
 
     positiveEncoders = pickerUpper.rotation(degrees) >= 0 && pickerUpper.rotation(degrees) <= 360 ? true : false;
     negativeEncoders = pickerUpper.rotation(degrees) <= 0 && pickerUpper.rotation(degrees) >= -360 ? true : false;
     encodersAreWithinRange = positiveEncoders || negativeEncoders ? true : false;
 
-    Controller1.ButtonUp.pressed(); // is the up button pressed?
-    Controller1.ButtonDown.pressed(); // is the down button pressed?
+    Controller1.ButtonUp.pressing() ? pickerUpper.spin(forward, 100, percent) : Controller1.ButtonDown.pressing() ? pickerUpper.spin(reverse, 100, percent) : doNothing(); // is the down button pressed?
 
     !encodersAreWithinRange ? pickerUpper.resetRotation() : doNothing(); // if the encoder value is not within range, reset the encoder value
 

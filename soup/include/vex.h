@@ -17,10 +17,10 @@
 
 #include "robot-config.h"
 
-#define waitUntil(condition)                                                   \
+#define waitUntil(Condition)                                                   \
   do {                                                                         \
     wait(5, msec);                                                             \
-  } while (!(condition))
+  } while (!(Condition))
 
 #define repeat(iterations)                                                     \
   for (int iterator = 0; iterator < iterations; iterator++)
