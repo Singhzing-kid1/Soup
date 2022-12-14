@@ -100,8 +100,9 @@ void diagonalB(double axis1, double axis2){
     motorB2.spin(forward, (axis1 + axis2)/2, percent);
 }
 
-void doNothing(){
-    Controller1.rumble("---...--.-.");
+void stopAll(){
+    driveTrain.stop();
+    pickerUpper.stop();
 }
 
 void usercontrol(void) {
@@ -159,13 +160,7 @@ void usercontrol(void) {
 
     !encodersAreWithinRange ? pickerUpper.resetRotation() : doNothing(); // if the encoder value is not within range, reset the encoder value
 
-    (axis3Cond1 || axis3Cond2) && axis4Cond3 ? forwardBackward(axis3) : driveTrain.stop(); // driving conrtrols for forward/backward, strafing, and turning
-    (axis4Cond1 || axis4Cond2) && axis3Cond3 ? strafe(axis4) : driveTrain.stop(); 
-    axis1Cond1 || axis1Cond2 ? pointTurn(axis1) : driveTrain.stop(); 
-
-    mixCond1 || mixCond2 ? diagonalA(axis3, axis4) : driveTrain.stop(); // driving controls for diagonal movement
-    mixCond3 ? diagonalB(axis3, -1*axis4) : driveTrain.stop();
-    mixCond4 ? diagonalB(-1*axis3, axis4) : driveTrain.stop();
+    (axis3Cond1 || axis3Cond2) && axis4Cond3 ? forwardBackward(axis3) : (axis4Cond1 || axis4Cond2) && axis3Cond3 ? strafe(axis4) : axis1Cond1 || axis1Cond2 ? pointTurn(axis1) : mixCond1 || mixCond2 ? diagonalA(axis3, axis4) : mixCond3 ? diagonalB(axis3, -1*axis4) : mixCond4 ? diagonalB(-1*axis3, axis4) : stopAll();
 
     wait(20, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
