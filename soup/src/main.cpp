@@ -17,8 +17,10 @@
 /*----------------------------------------------------------------------------*/
 
 #include "vex.h"
+#include <iostream>
 
 using namespace vex;
+
 
 // A global instance of competition
 competition Competition;
@@ -70,17 +72,17 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void forwardBackward(double axis){
-    motorA1.spin(forward, axis, percent);
-    motorA2.spin(reverse, axis, percent);
-    motorB1.spin(reverse, axis, percent);
-    motorB2.spin(forward, axis, percent);  
-}
-
-void strafe(double axis){
     motorA1.spin(reverse, axis, percent);
     motorA2.spin(forward, axis, percent);
     motorB1.spin(reverse, axis, percent);
-    motorB2.spin(forward, axis, percent);  
+    motorB2.spin(forward, axis, percent);   
+}
+
+void strafe(double axis){
+    motorA1.spin(forward, axis, percent);
+    motorA2.spin(reverse, axis, percent);
+    motorB1.spin(reverse, axis, percent);
+    motorB2.spin(forward, axis, percent);
 }
 
 void pointTurn(double axis){
@@ -100,17 +102,10 @@ void diagonalB(double axis1, double axis2){
     motorB2.spin(forward, (axis1 + axis2)/2, percent);
 }
 
-void stopAll(){
-    driveTrain.stop();
-    pickerUpper.stop();
-}
+
 
 void usercontrol(void) {
   // User control code here, inside the loop
-
-  double axis3 = Controller1.Axis3.position(); // put the values of the axises into variable's
-  double axis4 = Controller1.Axis4.position();
-  double axis1 = Controller1.Axis1.position();
 
   bool axis3Cond1;
   bool axis3Cond2;
@@ -135,7 +130,10 @@ void usercontrol(void) {
   bool encodersAreWithinRange; 
 
   while (1) {
-
+    double axis3 = Controller1.Axis3.position(); // put the values of the axises into variable's
+    double axis4 = Controller1.Axis4.position();
+    double axis1 = Controller1.Axis1.position();
+    
     axis3Cond1 = axis3 > 10 ? true : false; // get possible Conditions for axis 3
     axis3Cond2 = axis3 < -10 ? true : false;
     axis3Cond3 = axis3 == 0 ? true : false;
@@ -152,20 +150,14 @@ void usercontrol(void) {
     axis1Cond1 = axis1 > 10 ? true : false; // get possible Conditions for axis 1
     axis1Cond2 = axis1 < -10 ? true : false;
 
-    positiveEncoders = pickerUpper.rotation(degrees) >= 0 && pickerUpper.rotation(degrees) <= 360 ? true : false;
-    negativeEncoders = pickerUpper.rotation(degrees) <= 0 && pickerUpper.rotation(degrees) >= -360 ? true : false;
-    encodersAreWithinRange = positiveEncoders || negativeEncoders ? true : false;
+    Controller1.ButtonUp.pressing() ? pickerUpper.spin(forward, 100, percent) : Controller1.ButtonDown.pressing() ? pickerUpper.spin(reverse, 100, percent) : pickerUpper.stop(Coast); // is the down button pressed?
 
-    Controller1.ButtonUp.pressing() ? pickerUpper.spin(forward, 100, percent) : Controller1.ButtonDown.pressing() ? pickerUpper.spin(reverse, 100, percent) : doNothing(); // is the down button pressed?
+    (axis3Cond1 || axis3Cond2) && axis4Cond3 ? forwardBackward(axis3) : (axis4Cond1 || axis4Cond2) && axis3Cond3 ? strafe(axis4) : axis1Cond1 || axis1Cond2 ? pointTurn(axis1) : mixCond1 || mixCond2 ? diagonalA(axis3, axis4) : mixCond3 ? diagonalB(axis3, -1*axis4) : mixCond4 ? diagonalB(-1*axis3, axis4) : driveTrain.stop(Coast);
 
-    !encodersAreWithinRange ? pickerUpper.resetRotation() : doNothing(); // if the encoder value is not within range, reset the encoder value
-
-    (axis3Cond1 || axis3Cond2) && axis4Cond3 ? forwardBackward(axis3) : (axis4Cond1 || axis4Cond2) && axis3Cond3 ? strafe(axis4) : axis1Cond1 || axis1Cond2 ? pointTurn(axis1) : mixCond1 || mixCond2 ? diagonalA(axis3, axis4) : mixCond3 ? diagonalB(axis3, -1*axis4) : mixCond4 ? diagonalB(-1*axis3, axis4) : stopAll();
-
-    wait(20, msec); // Sleep the task for a short amount of time to
+    wait(10, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }
-}
+}   
 
 //
 // Main will set up the competition functions and callbacks.
