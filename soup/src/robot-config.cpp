@@ -14,9 +14,7 @@ motor motorB2 = motor(PORT13, ratio18_1, false);
 motor motorB1 = motor(PORT11, ratio18_1, false);
 motor_group driveTrain = motor_group(motorA2, motorA1, motorB2, motorB1);
 controller Controller1 = controller(primary);
-motor pickerUpperMotorA = motor(PORT16, ratio36_1, false);
-motor pickerUpperMotorB = motor(PORT17, ratio36_1, true);
-motor_group pickerUpper = motor_group(pickerUpperMotorA, pickerUpperMotorB);
+motor pickerUpperMotor = motor(PORT16, ratio6_1, false);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
@@ -24,7 +22,7 @@ bool RemoteControlCodeEnabled = true;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
- * 
+ *
  * This should be called at the start of your int main function.
  */
 void vexcodeInit( void ) {

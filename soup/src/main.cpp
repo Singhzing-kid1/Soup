@@ -1,12 +1,12 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// motorA2              motor         12              
-// motorA1              motor         14              
-// motorB2              motor         13              
-// motorB1              motor         11              
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----        
+// motorA2              motor         12
+// motorA1              motor         14
+// motorB2              motor         13
+// motorB1              motor         11
+// Controller1          controller
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -40,7 +40,7 @@ competition Competition;
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-  
+
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 }
@@ -75,7 +75,7 @@ void forwardBackward(double axis){
     motorA1.spin(reverse, axis, percent);
     motorA2.spin(forward, axis, percent);
     motorB1.spin(reverse, axis, percent);
-    motorB2.spin(forward, axis, percent);   
+    motorB2.spin(forward, axis, percent);
 }
 
 void strafe(double axis){
@@ -89,7 +89,7 @@ void pointTurn(double axis){
     motorA1.spin(reverse, axis, percent);
     motorA2.spin(reverse, axis, percent);
     motorB1.spin(forward, axis, percent);
-    motorB2.spin(forward, axis, percent);  
+    motorB2.spin(forward, axis, percent);
 }
 
 void diagonalA  (double axis1, double axis2){
@@ -118,22 +118,22 @@ void usercontrol(void) {
   bool mixCond1;
   bool mixCond2;
   bool mixCond3;
-  bool mixCond4;
+  bool mixCond4;pickerUpperMotor
 
 
   bool axis1Cond1;
   bool axis1Cond2;
 
-  
-  bool positiveEncoders; 
+
+  bool positiveEncoders;
   bool negativeEncoders;
-  bool encodersAreWithinRange; 
+  bool encodersAreWithinRange; pickerUpperMotorpickerUpperMotor
 
   while (1) {
     double axis3 = Controller1.Axis3.position(); // put the values of the axises into variable's
     double axis4 = Controller1.Axis4.position();
     double axis1 = Controller1.Axis1.position();
-    
+
     axis3Cond1 = axis3 > 10 ? true : false; // get possible Conditions for axis 3
     axis3Cond2 = axis3 < -10 ? true : false;
     axis3Cond3 = axis3 == 0 ? true : false;
@@ -150,14 +150,14 @@ void usercontrol(void) {
     axis1Cond1 = axis1 > 10 ? true : false; // get possible Conditions for axis 1
     axis1Cond2 = axis1 < -10 ? true : false;
 
-    Controller1.ButtonUp.pressing() ? pickerUpper.spin(forward, 100, percent) : Controller1.ButtonDown.pressing() ? pickerUpper.spin(reverse, 100, percent) : pickerUpper.stop(Coast); // is the down button pressed?
+    Controller1.ButtonUp.pressing() ? pickerUpperMotor.spin(forward, 100, percent) : Controller1.ButtonDown.pressing() ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast); // is the down button pressed?
 
-    (axis3Cond1 || axis3Cond2) && axis4Cond3 ? forwardBackward(axis3) : (axis4Cond1 || axis4Cond2) && axis3Cond3 ? strafe(axis4) : axis1Cond1 || axis1Cond2 ? pointTurn(axis1) : mixCond1 || mixCond2 ? diagonalA(axis3, axis4) : mixCond3 ? diagonalB(axis3, -1*axis4) : mixCond4 ? diagonalB(-1*axis3, axis4) : driveTrain.stop(Coast);
+    (axis3Cond1 || axis3Cond2) && axis4Cond3 ? forwardBackward(axis3) : (axis4Cond1 || axis4Cond2) && axis3Cond3 ? strafe(axis4) : axis1Cond1 || axis1Cond2 ? pointTurn(axis1) : mixCond1 || mixCond2 ? diagonalA(axis3, axis4) : mixCond3 ? diagonalB(axis3, -1*axis4) : mixCond4 ? diagonalB(-1*axis3, axis4) : driveTrain.stop(coast);
 
     wait(10, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
   }
-}   
+}
 
 //
 // Main will set up the competition functions and callbacks.

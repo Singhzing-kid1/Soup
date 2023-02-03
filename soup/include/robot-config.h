@@ -8,7 +8,7 @@ extern motor motorA1;
 extern motor motorB2;
 extern motor motorB1;
 extern controller Controller1;
-extern motor_group pickerUpper;
+extern motor pickerUpperMotor;
 extern motor_group driveTrain;
 
 /**

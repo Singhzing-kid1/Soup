@@ -99,8 +99,7 @@ bin/output.elf
 bin/output.bin
 bin/_pros_ld_timestamp.o
 *.ini
-desktop.ini
-.vscode/*
+desktop.ini/*
 
 # Additional recommendations, adapted from jpearman's suggestions at
 # https://www.vexforum.com/t/github-with-pros/52291/8.
