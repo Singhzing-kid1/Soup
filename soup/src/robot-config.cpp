@@ -15,6 +15,8 @@ motor motorB1 = motor(PORT11, ratio18_1, false);
 motor_group driveTrain = motor_group(motorA2, motorA1, motorB2, motorB1);
 controller Controller1 = controller(primary);
 motor pickerUpperMotor = motor(PORT16, ratio6_1, false);
+motor launcherMotor = motor(PORT17, ratio6_1, false);
+motor_group launcher = motor_group(launcherMotor, pickerUpperMotor);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

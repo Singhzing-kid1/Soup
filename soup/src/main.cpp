@@ -118,13 +118,18 @@ void usercontrol(void) {
   bool axis4Cond2;
   bool axis4Cond3;
 
+  bool axis2Cond1;
+  bool axis2Cond2;
+  bool axis2Cond3;
+
+  bool axis1cond1;
+  bool axis1cond2;
+  bool axis1cond3;
+
   bool mixCond1;
   bool mixCond2;
   bool mixCond3;
   bool mixCond4;
-
-  bool axis1Cond1;
-  bool axis1Cond2;
 
   while (1) {
     double axis3 = Controller1.Axis3.position(); // put the values of the axises into variable's
