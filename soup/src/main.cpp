@@ -45,32 +45,6 @@ void pre_auton(void) {
   // Example: clearing encoders, setting servo positions, ...
 }
 
-/*---------------------------------------------------------------------------*/
-/*                                                                           */
-/*                              Autonomous Task                              */
-/*                                                                           */
-/*  This task is used to control your robot during the autonomous phase of   */
-/*  a VEX Competition.                                                       */
-/*                                                                           */
-/*  You must modify the code to add your own robot specific commands here.   */
-/*---------------------------------------------------------------------------*/
-
-void autonomous(void) {
-  // ..........................................................................
-  // Insert autonomous user code here.
-  // ..........................................................................
-}
-
-/*---------------------------------------------------------------------------*/
-/*                                                                           */
-/*                              User Control Task                            */
-/*                                                                           */
-/*  This task is used to control your robot during the user control phase of */
-/*  a VEX Competition.                                                       */
-/*                                                                           */
-/*  You must modify the code to add your own robot specific commands here.   */
-/*---------------------------------------------------------------------------*/
-
 void forwardBackward(double axis){
     motorA1.spin(reverse, axis, percent);
     motorA2.spin(forward, axis, percent);
@@ -102,7 +76,36 @@ void diagonalB(double axis1, double axis2){
     motorB2.spin(forward, (axis1 + axis2)/2, percent);
 }
 
+/*---------------------------------------------------------------------------*/
+/*                                                                           */
+/*                              Autonomous Task                              */
+/*                                                                           */
+/*  This task is used to control your robot during the autonomous phase of   */
+/*  a VEX Competition.                                                       */
+/*                                                                           */
+/*  You must modify the code to add your own robot specific commands here.   */
+/*---------------------------------------------------------------------------*/
 
+void autonomous(void) {
+  // ..........................................................................
+  // Insert autonomous user code here.
+  // ..........................................................................
+
+    forwardBackward(100);
+    wait(10, seconds);
+    strafe(100);
+    wait(5, seconds);
+}
+
+/*---------------------------------------------------------------------------*/
+/*                                                                           */
+/*                              User Control Task                            */
+/*                                                                           */
+/*  This task is used to control your robot during the user control phase of */
+/*  a VEX Competition.                                                       */
+/*                                                                           */
+/*  You must modify the code to add your own robot specific commands here.   */
+/*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
   // User control code here, inside the loop
@@ -118,16 +121,10 @@ void usercontrol(void) {
   bool mixCond1;
   bool mixCond2;
   bool mixCond3;
-  bool mixCond4;pickerUpperMotor
-
+  bool mixCond4;
 
   bool axis1Cond1;
   bool axis1Cond2;
-
-
-  bool positiveEncoders;
-  bool negativeEncoders;
-  bool encodersAreWithinRange; pickerUpperMotorpickerUpperMotor
 
   while (1) {
     double axis3 = Controller1.Axis3.position(); // put the values of the axises into variable's
@@ -150,8 +147,8 @@ void usercontrol(void) {
     axis1Cond1 = axis1 > 10 ? true : false; // get possible Conditions for axis 1
     axis1Cond2 = axis1 < -10 ? true : false;
 
-    Controller1.ButtonUp.pressing() ? pickerUpperMotor.spin(forward, 100, percent) : Controller1.ButtonDown.pressing() ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast); // is the down button pressed?
-
+    // Controller1.ButtonUp.pressing() ? pickerUpperMotor.spin(forward, 100, percent) : Controller1.ButtonDown.pressing() ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast); // is the down button pressed
+    Controller1.ButtonR1.pressing() ? pickerUpperMotor.spin(forward, 100, percent) : Controller1.ButtonR2.pressing() ? pickerUpperMotor.spin(forward, 50, percent) : Controller1.ButtonL1.pressing() ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast);
     (axis3Cond1 || axis3Cond2) && axis4Cond3 ? forwardBackward(axis3) : (axis4Cond1 || axis4Cond2) && axis3Cond3 ? strafe(axis4) : axis1Cond1 || axis1Cond2 ? pointTurn(axis1) : mixCond1 || mixCond2 ? diagonalA(axis3, axis4) : mixCond3 ? diagonalB(axis3, -1*axis4) : mixCond4 ? diagonalB(-1*axis3, axis4) : driveTrain.stop(coast);
 
     wait(10, msec); // Sleep the task for a short amount of time to
