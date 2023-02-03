@@ -130,6 +130,7 @@ void usercontrol(void) {
     double axis3 = Controller1.Axis3.position(); // put the values of the axises into variable's
     double axis4 = Controller1.Axis4.position();
     double axis1 = Controller1.Axis1.position();
+    double axis2 = Controller1.Axis2.position();
 
     axis3Cond1 = axis3 > 10 ? true : false; // get possible Conditions for axis 3
     axis3Cond2 = axis3 < -10 ? true : false;
@@ -139,17 +140,43 @@ void usercontrol(void) {
     axis4Cond2 = axis4 < -10 ? true : false;
     axis4Cond3 = axis4 == 0 ? true : false;
 
-    mixCond1 = axis3Cond1 && axis4Cond1 ? true : false; // get possible Conditions for axis 3 and 4
-    mixCond2 = axis3Cond2 && axis4Cond2 ? true : false;
-    mixCond3 = axis3Cond1 && axis4Cond2 ? true : false;
-    mixCond4 = axis3Cond2 && axis4Cond1 ? true : false;
+    axis2Cond1 = axis2 > 10 ? true : false; // get possible Conditions for axis 2
+    axis2Cond2 = axis2 < -10 ? true : false;
+    axis2Cond3 = axis2 == 0 ? true : false;
+
+    axis1Cond1 = axis1 > 10 ? true : false; // get possible Conditions for axis 1
+    axis1Cond2 = axis1 < -10 ? true : false;
+    axis1Cond3 = axis1 == 0 ? true : false;
+
+    // diagona conditions
+    mixCond1 = axis3Cond1 && axis1Cond1 ? true : false;
+    mixCond2 = axis3Cond1 && axis1Cond2 ? true : false;
+    mixCond3 = axis3Cond2 && axis1Cond1 ? true : false;
+    mixCond4 = axis3Cond2 && axis1Cond2 ? true : false;
 
     axis1Cond1 = axis1 > 10 ? true : false; // get possible Conditions for axis 1
     axis1Cond2 = axis1 < -10 ? true : false;
 
     // Controller1.ButtonUp.pressing() ? pickerUpperMotor.spin(forward, 100, percent) : Controller1.ButtonDown.pressing() ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast); // is the down button pressed
     Controller1.ButtonR1.pressing() ? pickerUpperMotor.spin(forward, 100, percent) : Controller1.ButtonR2.pressing() ? pickerUpperMotor.spin(forward, 50, percent) : Controller1.ButtonL1.pressing() ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast);
-    (axis3Cond1 || axis3Cond2) && axis4Cond3 ? forwardBackward(axis3) : (axis4Cond1 || axis4Cond2) && axis3Cond3 ? strafe(axis4) : axis1Cond1 || axis1Cond2 ? pointTurn(axis1) : mixCond1 || mixCond2 ? diagonalA(axis3, axis4) : mixCond3 ? diagonalB(axis3, -1*axis4) : mixCond4 ? diagonalB(-1*axis3, axis4) : driveTrain.stop(coast);
+   // (axis3Cond1 || axis3Cond2) && axis4Cond3 ? forwardBackward(axis3) : (axis4Cond1 || axis4Cond2) && axis3Cond3 ? strafe(axis4) : axis1Cond1 || axis1Cond2 ? pointTurn(axis1) : mixCond1 || mixCond2 ? diagonalA(axis3, axis4) : mixCond3 ? diagonalB(axis3, -1*axis4) : mixCond4 ? diagonalB(-1*axis3, axis4) : driveTrain.stop(coast);
+
+
+    if ((axis3Cond1 || axis3Cond2) & axis4Cond3){
+        forwardBackward(axis3);
+    } else if ((axis4Cond1 || axis4Cond2) & axis3Cond3){
+        pointTurn(axis4);
+    } else if (axis1Cond1 || axis1Cond2){
+        strafe(axis1);
+    } else if(mixCond1 || mixCond2){
+        diagonalA(axis3, axis4);
+    } else if(mixCond3){
+        diagonalB(axis3, -1*axis4);
+    } else if(mixCond4){
+        diagonalB(-1*axis3, axis4);
+    } else {
+        driveTrain.stop(coast);
+    };
 
     wait(10, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
@@ -163,7 +190,7 @@ int main() {
   // Set up callbacks for autonomous and driver control periods.
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
-
+https://github.com/Singhzing-kid1/Souphttps://github.com/Singhzing-kid1/Soup
   // Run the pre-autonomous function.
   pre_auton();
 
