@@ -137,20 +137,20 @@ void usercontrol(void) {
     double axis1 = Controller1.Axis1.position();
     double axis2 = Controller1.Axis2.position();
 
-    axis3Cond1 = axis3 > 10 ? true : false; // get possible Conditions for axis 3
-    axis3Cond2 = axis3 < -10 ? true : false;
+    axis3Cond1 = axis3 > 5 ? true : false; // get possible Conditions for axis 3
+    axis3Cond2 = axis3 < -5 ? true : false;
     axis3Cond3 = axis3 == 0 ? true : false;
 
-    axis4Cond1 = axis4 > 10 ? true : false; // get possible Conditions for axis 4
-    axis4Cond2 = axis4 < -10 ? true : false;
+    axis4Cond1 = axis4 > 5 ? true : false; // get possible Conditions for axis 4
+    axis4Cond2 = axis4 < -5 ? true : false;
     axis4Cond3 = axis4 == 0 ? true : false;
 
-    axis2Cond1 = axis2 > 10 ? true : false; // get possible Conditions for axis 2
-    axis2Cond2 = axis2 < -10 ? true : false;
+    axis2Cond1 = axis2 > 5 ? true : false; // get possible Conditions for axis 2
+    axis2Cond2 = axis2 < -5 ? true : false;
     axis2Cond3 = axis2 == 0 ? true : false;
 
-    axis1Cond1 = axis1 > 10 ? true : false; // get possible Conditions for axis 1
-    axis1Cond2 = axis1 < -10 ? true : false;
+    axis1Cond1 = axis1 > 5 ? true : false; // get possible Conditions for axis 1
+    axis1Cond2 = axis1 < -5 ? true : false;
     axis1Cond3 = axis1 == 0 ? true : false;
 
     // diagona conditions
@@ -159,8 +159,8 @@ void usercontrol(void) {
     mixCond3 = axis3Cond2 && axis1Cond1 ? true : false;
     mixCond4 = axis3Cond2 && axis1Cond2 ? true : false;
 
-    axis1Cond1 = axis1 > 10 ? true : false; // get possible Conditions for axis 1
-    axis1Cond2 = axis1 < -10 ? true : false;
+    axis1Cond1 = axis1 > 5 ? true : false; // get possible Conditions for axis 1
+    axis1Cond2 = axis1 < -5 ? true : false;
 
     // Controller1.ButtonUp.pressing() ? pickerUpperMotor.spin(forward, 100, percent) : Controller1.ButtonDown.pressing() ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast); // is the down button pressed
     Controller1.ButtonR1.pressing() ? pickerUpperMotor.spin(forward, 100, percent) : Controller1.ButtonR2.pressing() ? pickerUpperMotor.spin(forward, 50, percent) : Controller1.ButtonL1.pressing() ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast);
