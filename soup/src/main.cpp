@@ -153,17 +153,13 @@ void usercontrol(void) {
     axis1Cond2 = axis1 < -5 ? true : false;
     axis1Cond3 = axis1 == 0 ? true : false;
 
-    // diagona conditions
+    // diagonal conditions
     mixCond1 = axis3Cond1 && axis1Cond1 ? true : false;
     mixCond2 = axis3Cond1 && axis1Cond2 ? true : false;
     mixCond3 = axis3Cond2 && axis1Cond1 ? true : false;
     mixCond4 = axis3Cond2 && axis1Cond2 ? true : false;
 
-
-    // Controller1.ButtonUp.pressing() ? pickerUpperMotor.spin(forward, 100, percent) : Controller1.ButtonDown.pressing() ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast); // is the down button pressed
     Controller1.ButtonR1.pressing() ? pickerUpperMotor.spin(forward, 100, percent) : Controller1.ButtonR2.pressing() ? pickerUpperMotor.spin(forward, 50, percent) : Controller1.ButtonL1.pressing() ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast);
-   // (axis3Cond1 || axis3Cond2) && axis4Cond3 ? forwardBackward(axis3) : (axis4Cond1 || axis4Cond2) && axis3Cond3 ? strafe(axis4) : axis1Cond1 || axis1Cond2 ? pointTurn(axis1) : mixCond1 || mixCond2 ? diagonalA(axis3, axis4) : mixCond3 ? diagonalB(axis3, -1*axis4) : mixCond4 ? diagonalB(-1*axis3, axis4) : driveTrain.stop(coast);
-
 
     if ((axis3Cond1 || axis3Cond2) & axis4Cond3){
         forwardBackward(axis3);
