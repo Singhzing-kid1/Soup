@@ -10,6 +10,9 @@ extern motor motorB1;
 extern controller Controller1;
 extern motor pickerUpperMotor;
 extern motor_group driveTrain;
+extern int sensitivity;
+extern int autonSpeed;
+extern int slowBeltSpeed;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

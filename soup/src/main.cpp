@@ -17,7 +17,6 @@
 /*----------------------------------------------------------------------------*/
 
 #include "vex.h"
-#include <iostream>
 
 using namespace vex;
 
@@ -76,6 +75,22 @@ void diagonalB(double axis1, double axis2){
     motorB2.spin(forward, (axis1 + axis2)/2, percent);
 }
 
+void movingPointTurnLeft(double axis1, double axis2){
+    double speed = (axis1 + axis2)/2;
+    motorA1.spin(reverse, speed/2, percent);
+    motorB2.spin(forward, speed/2, percent);
+    motorA2.spin(forward, speed, percent);
+    motorB1.spin(reverse, speed, percent);
+}
+
+void movingPointTurnRight(double axis1, double axis2){
+    double speed = (axis1 + axis2)/2;
+    motorA1.spin(reverse, speed, percent);
+    motorB2.spin(forward, speed, percent);
+    motorA2.spin(forward, speed/2, percent);
+    motorB1.spin(reverse, speed/2, percent);
+}
+
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              Autonomous Task                              */
@@ -91,9 +106,9 @@ void autonomous(void) {
   // Insert autonomous user code here.
   // ..........................................................................
 
-    forwardBackward(100);
+    forwardBackward(autonSpeed);
     wait(10, seconds);
-    strafe(100);
+    strafe(autonSpeed);
     wait(5, seconds);
 }
 
@@ -130,6 +145,10 @@ void usercontrol(void) {
   bool mixCond2;
   bool mixCond3;
   bool mixCond4;
+  bool mixCond5;
+  bool mixCond6;
+  bool mixCond7;
+  bool mixCond8;
 
   while (1) {
     double axis3 = Controller1.Axis3.position(); // put the values of the axises into variable's
@@ -137,29 +156,35 @@ void usercontrol(void) {
     double axis1 = Controller1.Axis1.position();
     double axis2 = Controller1.Axis2.position();
 
-    axis3Cond1 = axis3 > 5 ? true : false; // get possible Conditions for axis 3
-    axis3Cond2 = axis3 < -5 ? true : false;
+    axis3Cond1 = axis3 > sensitivity  ? true : false; // get possible Conditions for axis 3
+    axis3Cond2 = axis3 < -(sensitivity)  ? true : false;
     axis3Cond3 = axis3 == 0 ? true : false;
 
-    axis4Cond1 = axis4 > 5 ? true : false; // get possible Conditions for axis 4
-    axis4Cond2 = axis4 < -5 ? true : false;
+    axis4Cond1 = axis4 > sensitivity  ? true : false; // get possible Conditions for axis 4
+    axis4Cond2 = axis4 < -(sensitivity)  ? true : false;
     axis4Cond3 = axis4 == 0 ? true : false;
 
-    axis2Cond1 = axis2 > 5 ? true : false; // get possible Conditions for axis 2
-    axis2Cond2 = axis2 < -5 ? true : false;
+    axis2Cond1 = axis2 > sensitivity ? true : false; // get possible Conditions for axis 2
+    axis2Cond2 = axis2 < -(sensitivity) ? true : false;
     axis2Cond3 = axis2 == 0 ? true : false;
 
-    axis1Cond1 = axis1 > 5 ? true : false; // get possible Conditions for axis 1
-    axis1Cond2 = axis1 < -5 ? true : false;
+    axis1Cond1 = axis1 > sensitivity  ? true : false; // get possible Conditions for axis 1
+    axis1Cond2 = axis1 < -(sensitivity) ? true : false;
     axis1Cond3 = axis1 == 0 ? true : false;
 
     // diagonal conditions
-    mixCond1 = axis3Cond1 && axis1Cond1 ? true : false;
-    mixCond2 = axis3Cond1 && axis1Cond2 ? true : false;
-    mixCond3 = axis3Cond2 && axis1Cond1 ? true : false;
-    mixCond4 = axis3Cond2 && axis1Cond2 ? true : false;
+    mixCond1 = (axis3Cond1 && axis1Cond1) && axis4Cond3 ? true : false;
+    mixCond2 = (axis3Cond1 && axis1Cond2) && axis4Cond3 ? true : false;
+    mixCond3 = (axis3Cond2 && axis1Cond1) && axis4Cond3 ? true : false;
+    mixCond4 = (axis3Cond2 && axis1Cond2) && axis4Cond3 ? true : false;
 
-    Controller1.ButtonR1.pressing() ? pickerUpperMotor.spin(forward, 100, percent) : Controller1.ButtonR2.pressing() ? pickerUpperMotor.spin(forward, 50, percent) : Controller1.ButtonL1.pressing() ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast);
+    // moving point turn conditions
+    mixCond5 = (axis3Cond1 && axis4Cond1) && axis1Cond3 ? true : false;
+    mixCond6 = (axis3Cond1 && axis4Cond2) && axis1Cond3 ? true : false;
+    mixCond7 = (axis3Cond2 && axis4Cond1) && axis1Cond3 ? true : false;
+    mixCond8 = (axis3Cond2 && axis4Cond2) && axis1Cond3 ? true : false;
+
+    Controller1.ButtonR1.pressing() ? pickerUpperMotor.spin(forward, 100, percent) : Controller1.ButtonR2.pressing() ? pickerUpperMotor.spin(forward, slowBeltSpeed, percent) : Controller1.ButtonL1.pressing() ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast);
 
     if ((axis3Cond1 || axis3Cond2) & axis4Cond3){
         forwardBackward(axis3);
@@ -173,9 +198,17 @@ void usercontrol(void) {
         diagonalB(axis3, -1*axis4);
     } else if(mixCond4){
         diagonalB(-1*axis3, axis4);
+    } else if(mixCond5){
+        movingPointTurnLeft(axis3, axis4);
+    } else if(mixCond6){
+        movingPointTurnRight(axis3, axis4);
+    } else if(mixCond7){
+        movingPointTurnLeft(-1*axis3, axis4);
+    } else if(mixCond8){
+        movingPointTurnRight(-1*axis3, axis4);
     } else {
         driveTrain.stop(coast);
-    };
+    }
 
     wait(10, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
