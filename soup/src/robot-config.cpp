@@ -11,7 +11,7 @@ brain  Brain;
 motor motorA2 = motor(PORT12, ratio18_1, true);
 motor motorA1 = motor(PORT14, ratio18_1, true);
 motor motorB2 = motor(PORT13, ratio18_1, false);
-motor motorB1 = motor(PORT11, ratio18_1, false);
+motor motorB1 = motor(PORT20, ratio18_1, false);
 motor_group driveTrain = motor_group(motorA2, motorA1, motorB2, motorB1);
 controller Controller1 = controller(primary);
 motor pickerUpperMotor = motor(PORT16, ratio6_1, false);
