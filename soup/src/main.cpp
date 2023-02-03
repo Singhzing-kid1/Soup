@@ -159,8 +159,6 @@ void usercontrol(void) {
     mixCond3 = axis3Cond2 && axis1Cond1 ? true : false;
     mixCond4 = axis3Cond2 && axis1Cond2 ? true : false;
 
-    axis1Cond1 = axis1 > 5 ? true : false; // get possible Conditions for axis 1
-    axis1Cond2 = axis1 < -5 ? true : false;
 
     // Controller1.ButtonUp.pressing() ? pickerUpperMotor.spin(forward, 100, percent) : Controller1.ButtonDown.pressing() ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast); // is the down button pressed
     Controller1.ButtonR1.pressing() ? pickerUpperMotor.spin(forward, 100, percent) : Controller1.ButtonR2.pressing() ? pickerUpperMotor.spin(forward, 50, percent) : Controller1.ButtonL1.pressing() ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast);
