@@ -122,9 +122,9 @@ void usercontrol(void) {
   bool axis2Cond2;
   bool axis2Cond3;
 
-  bool axis1cond1;
-  bool axis1cond2;
-  bool axis1cond3;
+  bool axis1Cond1;
+  bool axis1Cond2;
+  bool axis1Cond3;
 
   bool mixCond1;
   bool mixCond2;
@@ -195,7 +195,6 @@ int main() {
   // Set up callbacks for autonomous and driver control periods.
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
-https://github.com/Singhzing-kid1/Souphttps://github.com/Singhzing-kid1/Soup
   // Run the pre-autonomous function.
   pre_auton();
 
