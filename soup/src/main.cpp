@@ -145,16 +145,16 @@ void usercontrol(void) {
   bool mixCond2;
   bool mixCond3;
   bool mixCond4;
-  bool mixCond5;
-  bool mixCond6;
-  bool mixCond7;
-  bool mixCond8;
 
   while (1) {
     double axis3 = Controller1.Axis3.position(); // put the values of the axises into variable's
     double axis4 = Controller1.Axis4.position();
     double axis1 = Controller1.Axis1.position();
     double axis2 = Controller1.Axis2.position();
+    bool buttonL1 = Controller1.ButtonL1.pressing();
+    bool buttonR1 = Controller1.ButtonR1.pressing();
+    bool buttonR2 = Controller1.ButtonR2.pressing();
+
 
     axis3Cond1 = axis3 > sensitivity  ? true : false; // get possible Conditions for axis 3
     axis3Cond2 = axis3 < -(sensitivity)  ? true : false;
@@ -178,13 +178,7 @@ void usercontrol(void) {
     mixCond3 = (axis3Cond2 && axis1Cond1) && axis4Cond3 ? true : false;
     mixCond4 = (axis3Cond2 && axis1Cond2) && axis4Cond3 ? true : false;
 
-    // moving point turn conditions
-    mixCond5 = (axis3Cond1 && axis4Cond1) && axis1Cond3 ? true : false;
-    mixCond6 = (axis3Cond1 && axis4Cond2) && axis1Cond3 ? true : false;
-    mixCond7 = (axis3Cond2 && axis4Cond1) && axis1Cond3 ? true : false;
-    mixCond8 = (axis3Cond2 && axis4Cond2) && axis1Cond3 ? true : false;
-
-    Controller1.ButtonR1.pressing() ? pickerUpperMotor.spin(forward, 100, percent) : Controller1.ButtonR2.pressing() ? pickerUpperMotor.spin(forward, slowBeltSpeed, percent) : Controller1.ButtonL1.pressing() ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast);
+    buttonR1 ? pickerUpperMotor.spin(forward, 100, percent) : buttonR2 ? pickerUpperMotor.spin(forward, slowBeltSpeed, percent) : buttonL1 ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast);
 
     if ((axis3Cond1 || axis3Cond2) & axis4Cond3){
         forwardBackward(axis3);
@@ -198,15 +192,7 @@ void usercontrol(void) {
         diagonalB(axis3, -1*axis4);
     } else if(mixCond4){
         diagonalB(-1*axis3, axis4);
-    } else if(mixCond5){
-        movingPointTurnLeft(axis3, axis4);
-    } else if(mixCond6){
-        movingPointTurnRight(axis3, axis4);
-    } else if(mixCond7){
-        movingPointTurnLeft(-1*axis3, axis4);
-    } else if(mixCond8){
-        movingPointTurnRight(-1*axis3, axis4);
-    } else {
+    }  else {
         driveTrain.stop(coast);
     }
 
