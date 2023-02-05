@@ -45,13 +45,27 @@ void pre_auton(void) {
 }
 
 void forwardBackward(double axis){
-    motorA1.spin(reverse, axis, percent);
-    motorA2.spin(forward, axis, percent);
-    motorB1.spin(reverse, axis, percent);
-    motorB2.spin(forward, axis, percent);
+    if (axis >= globalSpeed){
+        axis = globalSpeed;
+    } else if (axis <= -globalSpeed){
+        axis = -globalSpeed;
+    } else {
+        axis = axis;
+    }
+    motorA1.spin(forward, axis, percent);
+    motorA2.spin(reverse, axis, percent);
+    motorB1.spin(forward, axis, percent);
+    motorB2.spin(reverse, axis, percent);
 }
 
 void strafe(double axis){
+    if (axis >= globalSpeed){
+        axis = globalSpeed;
+    } else if (axis <= -globalSpeed){
+        axis = -globalSpeed;
+    } else {
+        axis = axis;
+    }
     motorA1.spin(forward, axis, percent);
     motorA2.spin(reverse, axis, percent);
     motorB1.spin(reverse, axis, percent);
@@ -59,37 +73,80 @@ void strafe(double axis){
 }
 
 void pointTurn(double axis){
+    if (axis >= globalSpeed){
+        axis = globalSpeed;
+    } else if (axis <= -globalSpeed){
+        axis = -globalSpeed;
+    } else {
+        axis = axis;
+    }
     motorA1.spin(reverse, axis, percent);
     motorA2.spin(reverse, axis, percent);
     motorB1.spin(forward, axis, percent);
     motorB2.spin(forward, axis, percent);
 }
 
-void diagonalA  (double axis1, double axis2){
-    motorA1.spin(forward, (axis1 + axis2)/2, percent);
-    motorA2.spin(reverse, (axis1 + axis2)/2, percent);
+void movingPointTurnA(double axis1, double axis2){ // forward/backward left
+    if (axis1 >= globalSpeed){
+        axis1 = globalSpeed;
+    } else if (axis1 <= -globalSpeed){
+        axis1 = -globalSpeed;
+    } else {
+        axis1 = axis1;
+    }
+
+    if (axis2 >= globalSpeed){
+        axis2 = globalSpeed;
+    } else if (axis2 <= -globalSpeed){
+        axis2 = -globalSpeed;
+    } else {
+        axis2 = axis2;
+    }
+
+    double avg = (axis1 + axis2)/2;
+    double diff = avg/2;
+    motorA1.spin(reverse, diff, percent);
+    motorA2.spin(reverse, avg, percent);
+    motorB1.spin(forward, avg, percent);
+    motorB2.spin(forward, diff, percent);
 }
 
-void diagonalB(double axis1, double axis2){
-    motorB1.spin(reverse, (axis1 + axis2)/2, percent);
-    motorB2.spin(forward, (axis1 + axis2)/2, percent);
+void movingPointTurnB(double axis1, double axis2){ // forward/backward right
+    if (axis1 >= globalSpeed){
+        axis1 = globalSpeed;
+    } else if (axis1 <= -globalSpeed){
+        axis1 = -globalSpeed;
+    } else {
+        axis1 = axis1;
+    }
+
+    if (axis2 >= globalSpeed){
+        axis2 = globalSpeed;
+    } else if (axis2 <= -globalSpeed){
+        axis2 = -globalSpeed;
+    } else {
+        axis2 = axis2;
+    }
+
+    double avg = (axis1 + axis2)/2;
+    double diff = avg/2;
+    motorA1.spin(reverse, avg, percent);
+    motorA2.spin(reverse, diff, percent);
+    motorB1.spin(forward, diff, percent);
+    motorB2.spin(forward, avg, percent);
 }
 
-void movingPointTurnLeft(double axis1, double axis2){
-    double speed = (axis1 + axis2)/2;
-    motorA1.spin(reverse, speed/2, percent);
-    motorB2.spin(forward, speed/2, percent);
-    motorA2.spin(forward, speed, percent);
-    motorB1.spin(reverse, speed, percent);
-}
+void roller(){
+    launcher.spin(forward, 50, percent);
+   // printf("R1 Pressed\n");
+    wait(10, msec);
+    }
 
-void movingPointTurnRight(double axis1, double axis2){
-    double speed = (axis1 + axis2)/2;
-    motorA1.spin(reverse, speed, percent);
-    motorB2.spin(forward, speed, percent);
-    motorA2.spin(forward, speed/2, percent);
-    motorB1.spin(reverse, speed/2, percent);
-}
+void stopRoller(){
+    launcher.stop();
+   // printf("R1 Released\n");
+    wait(10, msec);
+    }
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -100,16 +157,14 @@ void movingPointTurnRight(double axis1, double axis2){
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
-
 void autonomous(void) {
   // ..........................................................................
   // Insert autonomous user code here.
   // ..........................................................................
 
-    forwardBackward(autonSpeed);
-    wait(10, seconds);
-    strafe(autonSpeed);
-    wait(5, seconds);
+   // forwardBackward(autonSpeed);
+   // wait(15, seconds);
+   launcher.spin(forward, 50, percent);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -133,10 +188,6 @@ void usercontrol(void) {
   bool axis4Cond2;
   bool axis4Cond3;
 
-  bool axis2Cond1;
-  bool axis2Cond2;
-  bool axis2Cond3;
-
   bool axis1Cond1;
   bool axis1Cond2;
   bool axis1Cond3;
@@ -150,49 +201,35 @@ void usercontrol(void) {
     double axis3 = Controller1.Axis3.position(); // put the values of the axises into variable's
     double axis4 = Controller1.Axis4.position();
     double axis1 = Controller1.Axis1.position();
-    double axis2 = Controller1.Axis2.position();
     bool buttonL1 = Controller1.ButtonL1.pressing();
     bool buttonR1 = Controller1.ButtonR1.pressing();
     bool buttonR2 = Controller1.ButtonR2.pressing();
 
-
     axis3Cond1 = axis3 > sensitivity  ? true : false; // get possible Conditions for axis 3
     axis3Cond2 = axis3 < -(sensitivity)  ? true : false;
-    axis3Cond3 = axis3 == 0 ? true : false;
+    axis3Cond3 = axis3 < sensitivity && axis3 > -(sensitivity) ? true : false;
 
     axis4Cond1 = axis4 > sensitivity  ? true : false; // get possible Conditions for axis 4
     axis4Cond2 = axis4 < -(sensitivity)  ? true : false;
-    axis4Cond3 = axis4 == 0 ? true : false;
-
-    axis2Cond1 = axis2 > sensitivity ? true : false; // get possible Conditions for axis 2
-    axis2Cond2 = axis2 < -(sensitivity) ? true : false;
-    axis2Cond3 = axis2 == 0 ? true : false;
+    axis4Cond3 = axis4 < sensitivity && axis4 > -(sensitivity) ? true : false;
 
     axis1Cond1 = axis1 > sensitivity  ? true : false; // get possible Conditions for axis 1
     axis1Cond2 = axis1 < -(sensitivity) ? true : false;
     axis1Cond3 = axis1 == 0 ? true : false;
 
-    // diagonal conditions
-    mixCond1 = (axis3Cond1 && axis1Cond1) && axis4Cond3 ? true : false;
-    mixCond2 = (axis3Cond1 && axis1Cond2) && axis4Cond3 ? true : false;
-    mixCond3 = (axis3Cond2 && axis1Cond1) && axis4Cond3 ? true : false;
-    mixCond4 = (axis3Cond2 && axis1Cond2) && axis4Cond3 ? true : false;
+    mixCond1 = (axis3Cond1 && axis4Cond1) ? true : false;
+    mixCond2 = (axis3Cond1 && axis4Cond2) ? true : false;
+    mixCond3 = (axis3Cond2 && axis4Cond1) ? true : false;
+    mixCond4 = (axis3Cond2 && axis4Cond2) ? true : false;
 
-    buttonR1 ? pickerUpperMotor.spin(forward, 100, percent) : buttonR2 ? pickerUpperMotor.spin(forward, slowBeltSpeed, percent) : buttonL1 ? pickerUpperMotor.spin(reverse, 100, percent) : pickerUpperMotor.stop(coast);
+    Controller1.ButtonR1.pressed(roller);
+    Controller1.ButtonR2.released(stopRoller);
 
-    if ((axis3Cond1 || axis3Cond2) & axis4Cond3){
+    if (axis3Cond1 || axis3Cond2){
         forwardBackward(axis3);
-    } else if ((axis4Cond1 || axis4Cond2) & axis3Cond3){
-        pointTurn(axis4);
     } else if (axis1Cond1 || axis1Cond2){
-        strafe(axis1);
-    } else if(mixCond1 || mixCond2){
-        diagonalA(axis3, axis4);
-    } else if(mixCond3){
-        diagonalB(axis3, -1*axis4);
-    } else if(mixCond4){
-        diagonalB(-1*axis3, axis4);
-    }  else {
+        pointTurn(axis1);
+    } else {
         driveTrain.stop(coast);
     }
 

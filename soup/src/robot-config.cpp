@@ -15,11 +15,14 @@ motor motorB1 = motor(PORT20, ratio18_1, false);
 motor_group driveTrain = motor_group(motorA2, motorA1, motorB2, motorB1);
 controller Controller1 = controller(primary);
 motor pickerUpperMotor = motor(PORT16, ratio6_1, false);
+motor launcherMotor = motor(PORT19, ratio6_1, false);
+motor_group launcher = motor_group(launcherMotor, pickerUpperMotor);
 
-// Other Value
-int sensitivity = 5;
-int autonSpeed = 100;
+// Other Values
+int sensitivity = 2;
+int autonSpeed = 30;
 int slowBeltSpeed = 50;
+int globalSpeed = 90;
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
